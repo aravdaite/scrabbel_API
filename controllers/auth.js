@@ -86,7 +86,7 @@ exports.addSevenLetterWords = asyncHandler(async (req, res, next) => {
     const user = await User.findById(req.user.id);
 
     console.log(req.body.word)
-    user.sevenLetterWords.push(req.body.word);
+    user.sevenLetterWords.unshift(req.body.word);
     await user.save();
 
     res.status(200).json({
