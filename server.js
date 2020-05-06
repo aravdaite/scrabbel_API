@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/error')
 const cookieParser = require('cookie-parser')
+const cors = require('cors')
 
 //load env vars
 dotenv.config({ path: './config/config.env' })
@@ -26,6 +27,11 @@ app.use('/api/dictionary', dictionary);
 app.use('/api/words', words);
 
 app.use(errorHandler);
+app.use(cors({
+    'allowedHeaders': ['Content-Type'],
+    'origin': '*',
+    'preflightContinue': true
+}));
 
 const PORT = process.env.PORT || 5000;
 
