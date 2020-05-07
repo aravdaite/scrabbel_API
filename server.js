@@ -17,7 +17,7 @@ const dictionary = require('./routes/dictionary');
 const words = require('./routes/words');
 
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
@@ -27,11 +27,7 @@ app.use('/api/dictionary', dictionary);
 app.use('/api/words', words);
 
 app.use(errorHandler);
-app.use(cors({
-    'allowedHeaders': ['Content-Type'],
-    'origin': '*',
-    'preflightContinue': true
-}));
+
 
 const PORT = process.env.PORT || 5000;
 
