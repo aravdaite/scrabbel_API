@@ -17,9 +17,17 @@ const dictionary = require('./routes/dictionary');
 const words = require('./routes/words');
 
 const app = express();
-app.use(cors());
+//app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+
+app.use((req, res, next) => {
+    res.append('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.append('Access-Control-Allow-Headers', 'Content-Type');
+    res.header("Access-Control-Allow-Credentials", "true");
+    next();
+});
 
 //mount routes
 app.use('/api/auth', auth);
@@ -27,6 +35,7 @@ app.use('/api/dictionary', dictionary);
 app.use('/api/words', words);
 
 app.use(errorHandler);
+
 
 
 const PORT = process.env.PORT || 5000;
