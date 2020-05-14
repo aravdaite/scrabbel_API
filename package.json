@@ -20,7 +20,8 @@
     "mongoose": "^5.9.7",
     "nodemailer": "^6.4.6",
     "nodemon": "^2.0.3",
-    "oxford-dictionary": "^1.6.0"
+    "oxford-dictionary": "^1.6.0",
+    "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.3"
