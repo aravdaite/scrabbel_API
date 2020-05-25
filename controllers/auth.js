@@ -4,8 +4,6 @@ const User = require('../models/User');
 const sendEmail = require('../utils/sendEmail');
 const crypto = require('crypto');
 
-
-const pageUrl = "http://localhost:3000/resetpassword";
 // @desc      Register user
 // @route     POST /api/auth/register
 // @access    Public
@@ -174,7 +172,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
     const message = `You are receiving this email because you (or someone else) has requested the reset of a password. 
     Please click on the link and reset your password: \n\n 
-    <a href="${pageUrl}${resetToken}">Click here!</a>`
+    <a href="${process.env.NODE_ENV}/resetpassword${resetToken}">Click here!</a>`
 
     try {
         await sendEmail({
