@@ -1,12 +1,12 @@
 
 const express = require('express');
 const {
-    findword7
+    findword
 } = require('../controllers/words');
 
 const router = express.Router();
 
 
-router.get('/findword7', findword7);
+router.get('/findword/:number', findword);
 
 module.exports = router;

@@ -66,9 +66,24 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.addFreeWord = asyncHandler(async (req, res, next) => {
     const user = await User.findById(req.user.id);
+    console.log("runs")
 
-    console.log(req.body.word)
-    user.freestyleWords.unshift(req.body.word);
+    let check = false;
+
+    user.freestyleWords.filter((word, index) => {
+        if (word.word === req.body.word) {
+            let num = user.freestyleWords[index].amount + 1;
+            console.log("num", user.freestyleWords[index].amount)
+            user.freestyleWords.splice(index, 1);
+            user.freestyleWords.unshift({ word: req.body.word, amount: num });
+            check = true;
+        }
+    }
+    )
+    if (check === false) {
+        user.freestyleWords.unshift({ word: req.body.word, amount: 1 });
+    }
+
     await user.save();
 
     res.status(200).json({

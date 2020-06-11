@@ -19,47 +19,52 @@ const Http = new XMLHttpRequest();
 exports.getMeaning = asyncHandler(async (req, res, next) => {
 
     let word = req.params.word;
+    console.log(word)
     let response = {
     };
     const categories = [];
     const definitions = [];
     let top;
 
-    /*   const props = {
-           word: word,
-           //filter: "lexicalCategory=noun, verb, adjective, adverb, pronoun"
-           // target_language: "es"
-       };
-   
-       var lookup = dict.find(props);
-   
-       await lookup.then((res) => {
-           if (res && res.results) {
-               res.results.map((result, index) => {
-                   const obj = {}
-                   result.lexicalEntries.map((entry, index2) => {
-                       const def = [];
-                       entry.entries.map(index3 => {
-                           index3.senses.map(index => {
-                               if (index.definitions != null) {
-                                   def.push(index.definitions[0]);
-                               }
-                               else {
-                                   def.push(index.crossReferenceMarkers[0]);
-                               }
-                           })
-                       })
-                       Object.assign(obj, { [entry.lexicalCategory.text]: def })
-                   })
-                   Object.assign(response, { [index]: obj })
-               })
-   
-           }
-       })
-           .catch((err) => console.log(err))
-           */
+    const props = {
+        word: word,
+        //filter: "lexicalCategory=noun, verb, adjective, adverb, pronoun"
+        // target_language: "es"
+    };
 
-    if (Object.keys(response).length === 0 && response.constructor === Object) {
+    var lookup = dict.find(props);
+
+    await lookup.then((resp) => {
+
+        if (resp && resp.results) {
+            resp.results[0].lexicalEntries.map(lexEnt => {
+                categories.push(lexEnt.lexicalCategory.text);
+                const definitions2 = [];
+                lexEnt.entries.forEach((entry, index) => {
+                    lexEnt.entries[index].senses.forEach((sense, index2) => {
+                        definitions2.push(lexEnt.entries[index].senses[index2].definitions[0]);
+                    })
+                })
+                definitions.push(definitions2);
+            })
+            if (categories !== undefined && definitions !== undefined) {
+
+                Object.assign(response, { categories: categories }, { definitions: definitions })
+            }
+            if (Object.keys(response).length !== 0 && response.constructor === Object) {
+                res
+                    .status(200)
+                    .json({
+                        success: true,
+                        response
+                    });
+            }
+
+        }
+    })
+        .catch((err) => console.log(err))
+
+    if (Object.keys(response).length === 0 && response.constructor === Object && response.definitions === undefined) {
         await Http.open("get", `https://www.dictionaryapi.com/api/v3/references/collegiate/json/${word}?key=${key}`)
         await Http.send();
 
@@ -70,7 +75,6 @@ exports.getMeaning = asyncHandler(async (req, res, next) => {
                     resp = JSON.parse(Http.responseText);
                     if (resp && resp[0] && resp[0].constructor === Object) {
                         if ('meta' in resp[0]) {
-                            console.log("found meta")
                             // categories.push(`From ${response[0].meta.id}`)
                             const meta = resp[0].meta.id.replace(/[0-9]/g, '').replace(/:/g, '');
                             if (word.toLowerCase() !== meta) {
@@ -85,19 +89,24 @@ exports.getMeaning = asyncHandler(async (req, res, next) => {
                     }
                     if (categories !== undefined && definitions !== undefined) {
                         Object.assign(response, { categories: categories }, { definitions: definitions })
-                        console.log(response)
                     }
+                    console.log(response);
                     res
                         .status(200)
                         .json({
                             success: true,
                             response
                         });
-                }
-            }
 
+                }
+
+            }
         }
+
     }
+
+
+
 })
 // @desc      Validate word
 // @route     GET /api/meaning/validate/:word
@@ -114,9 +123,7 @@ exports.validate = asyncHandler(async (req, res, next) => {
     Http.onreadystatechange = (e) => {
         if (Http.readyState === 4) {
             if (Http.status === 200) {
-                console.log("new respnse", res)
                 resp = JSON.parse(Http.responseText);
-
                 if (resp && resp[0] && resp[0].constructor === Object) {
                     response = true;
                     res
