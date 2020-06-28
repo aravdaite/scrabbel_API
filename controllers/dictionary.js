@@ -19,12 +19,9 @@ const Http = new XMLHttpRequest();
 exports.getMeaning = asyncHandler(async (req, res, next) => {
 
     let word = req.params.word;
-    console.log(word)
-    let response = {
-    };
+    let response = {};
     const categories = [];
     const definitions = [];
-    let top;
 
     const props = {
         word: word,

@@ -12,7 +12,6 @@ exports.findword = asyncHandler(async (req, res, next) => {
     let number = req.params.number;
     let num; //number of words in the collection
     let dataBase;
-    console.log(number)
     if (number == 7) {
         dataBase = WordSeven;
         num = 24000;
@@ -24,10 +23,8 @@ exports.findword = asyncHandler(async (req, res, next) => {
         dataBase = WordFive;
         num = 500;
     }
-    console.log(dataBase)
 
     let word = await dataBase.find().limit(1).skip(Math.floor(Math.random() * num));
-    console.log(word)
     word = word[0];
     res
         .status(200)
@@ -35,4 +32,25 @@ exports.findword = asyncHandler(async (req, res, next) => {
             success: true,
             word
         });
+})
+
+exports.findwordforSocket = asyncHandler(async (req, res, next) => {
+    let number = 6;
+    let num; //number of words in the collection
+    let dataBase;
+    if (number == 7) {
+        dataBase = WordSeven;
+        num = 24000;
+    } else if (number == 6) {
+        dataBase = WordSix;
+        num = 500;
+    }
+    else if (number == 5) {
+        dataBase = WordFive;
+        num = 500;
+    }
+
+    return await WordSix.find().limit(1).skip(Math.floor(Math.random() * num));
+
+
 })
